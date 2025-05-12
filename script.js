@@ -1,8 +1,12 @@
+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
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
 const chat = document.getElementById('chat');
 
-form.addEventListener('submit', (e) => {
+// ⚠️ TA CLÉ API ICI (DANGEREUX EN PROD)
+const OPENAI_API_KEY = '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';
+
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const message = input.value.trim();
   if (!message) return;
@@ -11,15 +15,37 @@ form.addEventListener('submit', (e) => {
   input.value = '';
   scrollToBottom();
 
-  // Simulation de réponse IA
   addTyping();
 
-  setTimeout(() => {
+  try {
+    const aiResponse = await getAIResponse(message);
     removeTyping();
-    addMessage("Voici une réponse simulée par l'IA.", 'ai');
+    addMessage(aiResponse, 'ai');
     scrollToBottom();
-  }, 1500);
+  } catch (err) {
+    removeTyping();
+    addMessage("Erreur lors de la réponse de l’IA.", 'ai');
+    console.error(err);
+  }
 });
+
+async function getAIResponse(userMessage) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: userMessage }],
+      temperature: 0.7
+    })
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content.trim();
+}
 
 function addMessage(text, sender) {
   const msg = document.createElement('div');
@@ -44,5 +70,3 @@ function removeTyping() {
 function scrollToBottom() {
   chat.scrollTop = chat.scrollHeight;
 }
-
-

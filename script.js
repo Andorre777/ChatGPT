@@ -1,70 +1,48 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Inter", sans-serif;
-  background-color: #343541;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+const form = document.getElementById('chat-form');
+const input = document.getElementById('user-input');
+const chat = document.getElementById('chat');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const message = input.value.trim();
+  if (!message) return;
+
+  addMessage(message, 'user');
+  input.value = '';
+  scrollToBottom();
+
+  // Simulation de réponse IA
+  addTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    addMessage("Voici une réponse simulée par l'IA.", 'ai');
+    scrollToBottom();
+  }, 1500);
+});
+
+function addMessage(text, sender) {
+  const msg = document.createElement('div');
+  msg.classList.add('message', sender);
+  msg.textContent = text;
+  chat.appendChild(msg);
 }
 
-.chat-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
+function addTyping() {
+  const typing = document.createElement('div');
+  typing.id = 'typing';
+  typing.classList.add('message', 'ai', 'typing');
+  typing.textContent = 'L’IA écrit...';
+  chat.appendChild(typing);
 }
 
-.message {
-  max-width: 80%;
-  padding: 12px 16px;
-  margin: 10px 0;
-  border-radius: 12px;
-  line-height: 1.5;
-  white-space: pre-wrap;
+function removeTyping() {
+  const typing = document.getElementById('typing');
+  if (typing) typing.remove();
 }
 
-.user {
-  background-color: #10a37f;
-  align-self: flex-end;
-  text-align: right;
+function scrollToBottom() {
+  chat.scrollTop = chat.scrollHeight;
 }
 
-.ai {
-  background-color: #444654;
-  align-self: flex-start;
-}
-
-form {
-  display: flex;
-  padding: 10px;
-  background: #40414f;
-  border-top: 1px solid #2c2c30;
-}
-
-textarea {
-  flex: 1;
-  padding: 10px;
-  resize: none;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  outline: none;
-}
-
-button {
-  background-color: #10a37f;
-  border: none;
-  padding: 10px 16px;
-  margin-left: 10px;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.typing {
-  font-style: italic;
-  color: #888;
-}
 

@@ -1,4 +1,4 @@
-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
+
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
 const chat = document.getElementById('chat');

@@ -13,6 +13,8 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .message {
@@ -22,6 +24,8 @@ body {
   border-radius: 12px;
   line-height: 1.5;
   white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
 }
 
 .user {
@@ -50,6 +54,8 @@ textarea {
   border: none;
   border-radius: 8px;
   outline: none;
+  background-color: #fff;
+  color: #000;
 }
 
 button {
@@ -61,10 +67,14 @@ button {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background-color: #0e8e6c;
 }
 
 .typing {
   font-style: italic;
   color: #888;
 }
-

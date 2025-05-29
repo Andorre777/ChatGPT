@@ -1,10 +1,9 @@
-
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
 const chat = document.getElementById('chat');
 
-// ⚠️ TA CLÉ API ICI (DANGEREUX EN PROD)
-const OPENAI_API_KEY = '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';
+// ⚠️ Clé API à stocker côté serveur (jamais dans le front-end !)
+const OPENAI_API_KEY = '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'; // <- Remplace ici **temporairement** en dev (jamais en prod)
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -20,7 +19,13 @@ form.addEventListener('submit', async (e) => {
   try {
     const aiResponse = await getAIResponse(message);
     removeTyping();
-    addMessage(aiResponse, 'ai');
+
+    if (!aiResponse) {
+      addMessage("L'IA n'a pas pu générer de réponse.", 'ai');
+    } else {
+      addMessage(aiResponse, 'ai');
+    }
+
     scrollToBottom();
   } catch (err) {
     removeTyping();
@@ -43,14 +48,19 @@ async function getAIResponse(userMessage) {
     })
   });
 
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP ${response.status}`);
+  }
+
   const data = await response.json();
-  return data.choices[0].message.content.trim();
+
+  return data?.choices?.[0]?.message?.content?.trim() || null;
 }
 
 function addMessage(text, sender) {
   const msg = document.createElement('div');
   msg.classList.add('message', sender);
-  msg.textContent = text;
+  msg.innerText = text; // Prévention XSS
   chat.appendChild(msg);
 }
 
@@ -58,7 +68,7 @@ function addTyping() {
   const typing = document.createElement('div');
   typing.id = 'typing';
   typing.classList.add('message', 'ai', 'typing');
-  typing.textContent = 'L’IA écrit...';
+  typing.innerText = 'L’IA écrit...';
   chat.appendChild(typing);
 }
 
